@@ -1,0 +1,20 @@
+{
+    "BaseModel.71f86683-354a-4d04-84de-04bce601ddaf": {
+        "id": "71f86683-354a-4d04-84de-04bce601ddaf",
+        "created_at": "2022-08-07T15:14:23.779300",
+        "updated_at": "2022-08-07T15:14:23.779300",
+        "__class__": "BaseModel"
+    },
+    "BaseModel.f4937209-1999-4699-942d-90b182e3f4eb": {
+        "id": "f4937209-1999-4699-942d-90b182e3f4eb",
+        "created_at": "2022-08-07T15:55:19.002413",
+        "updated_at": "2022-08-07T15:55:19.002413",
+        "__class__": "BaseModel"
+    },
+    "BaseModel.6bb8bc04-972b-4f6f-9a56-66c1da497aa7": {
+        "id": "202",
+        "created_at": "2022-08-07T16:19:41.422491",
+        "updated_at": "2022-08-07T16:19:41.422491",
+        "__class__": "BaseModel"
+    }
+}
