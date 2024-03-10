@@ -8,16 +8,39 @@ from models.engine.file_storage import FileStorage
 from datetime import datetime
 import unittest
 import json
+import os
 
 
 class TestBaseModel(unittest.TestCase):
     """
     Tests the BaseModel class and its functions
     """
-    def setUp(cls):
+    @classmethod
+    def setUpClass(cls):
         """
-        sets up temporary instances for testing
+        for making sure we don't change original the file
+        contents while testing
         """
+        try:
+            os.rename("file.json", "original_file")
+        except IOError:
+            pass
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        for setting binding back data orginal storage to the application
+        after tests with temporary dat storage file have been finished
+        and deleting the temporary file that was used.
+        """
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("original_file", "file.json")
+        except IOError:
+            pass
 
     def test_init__(self):
         """
@@ -31,9 +54,27 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(hasattr(BaseModel, "to_dict"))
         self.assertTrue(hasattr(BaseModel, "__str__"))
 
+    def test_only_uniq_models_created(self):
+        """
+        Asserts that models created are unique, no module can be
+        duplicated
+        """
+        base1 = BaseModel()
+        base2 = BaseModel()
+        self.assertIsNot(base1, base2)
+        self.assertIsNot(base1.id, base2.id)
+
+    def test_model_saved_in_file_objects(self):
+        """
+        Tests that once a new base_model is created it gets saved
+        in file models
+        """
+        self.assertTrue(BaseModel(), FileStorage().all().values())
+
     def test_initialization_with_kwargs(self):
         """
-        Asserts that initialization with keyword arguments is handled.
+        Asserts that initialization with keyword arguments is handled
+        while *args are ignored.
         """
         my_model = BaseModel()
         my_model.name = "My First Model"
@@ -46,6 +87,9 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(new_model_dict['my_number'], my_model.my_number)
         self.assertEqual(new_model_dict[
             '__class__'], my_model.__class__.__name__)
+        my_model = BaseModel("mike")
+        self.assertNotIn("mike", my_model.__dict__)
+        self.assertNotIn("mike", my_model.__dict__.values())
 
     def test_public_instance_attributes(self):
         """
@@ -71,6 +115,9 @@ class TestBaseModel(unittest.TestCase):
         my_model.save()
         self.assertNotEqual(initial_updated_at, my_model.updated_at)
         self.assertIn(my_model, FileStorage().all().values())
+        with self.assertRaises(TypeError):
+            my_model.save("invalid input")
+            my_model.save(None)
 
     def test_to_dict(self):
         """
