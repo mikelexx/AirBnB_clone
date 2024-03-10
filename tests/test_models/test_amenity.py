@@ -5,12 +5,40 @@ This module contains class for testing Amenity model
 from models.amenity import Amenity
 from models.base_model import BaseModel
 import unittest
+import os
 
 
 class TestAmenity(unittest.TestCase):
     """
     This class tests Amenity model
     """
+    @classmethod
+    def setUpClass(cls):
+        """
+        for making sure we don't change original the file
+        contents while testing
+        """
+        try:
+            os.rename("file.json", "original_file")
+        except IOError:
+            pass
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        for setting binding back data orginal storage to the application
+        after tests with temporary dat storage file have been finished
+        and deleting the temporary file that was used.
+        """
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("original_file", "file.json")
+        except IOError:
+            pass
+
     def test__init__(self):
         """
         tests initialization of amenity model.

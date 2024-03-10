@@ -18,6 +18,32 @@ class TestFileStorage(unittest.TestCase):
     """
     THis class contains testcases for file_storage engine
     """
+    @classmethod
+    def setUpClass(cls):
+        """
+        for making sure we don't change original the file
+        contents while testing
+        """
+        try:
+            os.rename("file.json", "original_file")
+        except IOError:
+            pass
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        for setting binding back data orginal storage to the application
+        after tests with temporary dat storage file have been finished
+        and deleting the temporary file that was used.
+        """
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("original_file", "file.json")
+        except IOError:
+            pass
 
     def test__init__(self):
         """
@@ -35,6 +61,18 @@ class TestFileStorage(unittest.TestCase):
         self.assertTrue(hasattr(FileStorage, "save"))
         self.assertTrue(hasattr(FileStorage, "reload"))
         self.assertTrue(hasattr(FileStorage, "__init__"))
+
+    def test_no_arguments_functions(self):
+        """
+        Assert that only correct argument types and counts are passed
+        to the save FileStorage model function
+        """
+        with self.assertRaises(TypeError):
+            file_storage = FileStorage()
+            file_storage.save(None)
+            file_storage.reload(None)
+            file_storage.all(None)
+            file_storag.new(None, None)
 
     def test_all(self):
         """

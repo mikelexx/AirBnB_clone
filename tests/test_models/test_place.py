@@ -5,12 +5,39 @@ THis module contains unittest for Place model
 from models.place import Place
 from models.base_model import BaseModel
 import unittest
+import os
 
 
 class TestPlace(unittest.TestCase):
     """
     THis class tests the Place Model
     """
+    @classmethod
+    def setUpClass(cls):
+        """
+        for making sure we don't change original the file
+        contents while testing
+        """
+        try:
+            os.rename("file.json", "original_file")
+        except IOError:
+            pass
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        for setting binding back data orginal storage to the application
+        after tests with temporary dat storage file have been finished
+        and deleting the temporary file that was used.
+        """
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("original_file", "file.json")
+        except IOError:
+            pass
 
     def test__init__(self):
         place = Place()
